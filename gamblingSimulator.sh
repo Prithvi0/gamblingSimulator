@@ -6,3 +6,16 @@ echo "Welcome to Gambling Simulator"
 # CONSTANTS
 STAKE=100
 BET=1
+WIN=1
+LOSE=0
+
+# MAKE $1 BET SO EITHER WIN or LOSE $1
+gamblingResult=$((RANDOM%2))
+if [[ gamblingResult -eq $WIN ]]
+then
+	STAKE=$((STAKE+BET))
+	echo "Won"
+else
+	STAKE=$((STAKE-BET))
+	echo "Lost"
+fi
