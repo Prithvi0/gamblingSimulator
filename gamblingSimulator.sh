@@ -11,11 +11,12 @@ LOSE=0
 
 # MAKE $1 BET SO EITHER WIN or LOSE $1
 gamblingResult=$((RANDOM%2))
-if [[ gamblingResult -eq $WIN ]]
+if [[ $gamblingResult -eq $WIN ]]
 then
 	STAKE=$((STAKE+BET))
 	echo "Won"
-else
+elif [[ $gamblingResult -eq $LOSE ]]
+then
 	STAKE=$((STAKE-BET))
 	echo "Lost"
 fi
