@@ -8,7 +8,9 @@ LOSE=0
 
 # VARIABLES
 days=30
+count=0
 
+declare -a Array
 # FUNCTION TO CHECK AMOUNT WON OR LOST ON MONTHLY BASIS
 function MonthlyLoseWin () {
 	for((day=1;day<=$days;day++))
@@ -16,8 +18,9 @@ function MonthlyLoseWin () {
 		stake=100   #starting stake with $100
 		halfStake=$(($stake/2))
 		fullStake=$((stake+halfStake))
-		lost=0
+		tempStake=$stake
 		won=0
+		lost=0
 		# CONDITION TO CHECK IF stake EQUALS TO 50% LESS OR MORE THAN THE INITIAL STAKE
 		while [[ $stake -gt $halfStake && $stake -lt $fullStake ]]
 		do
@@ -32,12 +35,40 @@ function MonthlyLoseWin () {
 				lost=$((lost+1))
 			fi
 		done
-		if [[ $won -gt $lost ]]
+
+		if [[ $stake -gt $tempStake ]]
 		then
-			echo "Day:$day; Won by $won-$lost=$((won-lost))"
+			winDifference=$((stake-tempStake))
+			Array[$count]=$winDifference
 		else
-			echo "Day:$day; Lost by $lost-$won=$((lost-won))"
+			lostDifference=$((stake-tempStake))
+			Array[$count]=$lostDifference
+		fi
+		count=$((count+1))
+done
+}
+MonthlyLoseWin # CALLING THE FUNCTION
+
+function LuckiestUnluckiestDay () {
+	tempValue=0
+	# CALCULATING LUCKIEST AND UNLUCKIEST DAY
+	for((day=0;day<$days;day++))
+	do
+		tempValue=$(($tempValue+"${Array[$day]}"))
+		# CONDITION TO CHECK THE MAXIMUM WON AND CONSIDER IT AS LUCKIEST DAY
+		if [[ $maxWon -le $tempValue ]]
+		then
+		   maxWon=$tempValue
+		   luckyDay=$((day+1))
+		fi
+		# CONDITION TO CHECK THE MAXIMUM LOST AND CONSIDER IT AS UNLUCKIEST DAY
+		if [[ $maxLost -ge $tempValue ]]
+		then
+		   maxLost=$tempValue
+		   unluckyDay=$((day+1))
 		fi
 	done
+	echo "Luckiestday:$luckyDay; Won:$maxWon"
+	echo "Unluckiestday:$unluckyDay; Lost:$maxLost"
 }
-MonthlyLoseWin	# CALLING THE FUNCTION
+LuckiestUnluckiestDay	# CALLING THE FUNCTION
